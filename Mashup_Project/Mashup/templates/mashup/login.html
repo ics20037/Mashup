@@ -1,0 +1,16 @@
+{% extends 'mashup/base.html' %}
+{% load crispy_forms_tags %}
+{% block content %}
+
+<form method="post">
+    {% csrf_token %}
+    <fieldset>
+        <legend>Log In</legend>
+        {{ form|crispy }}
+    </fieldset>
+    <div class="form-group">
+        <button type="submit">Log In</button>
+    </div>
+</form>
+
+{% endblock content%}
