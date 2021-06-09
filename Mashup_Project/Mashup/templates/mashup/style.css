@@ -18,7 +18,7 @@ nav ul{
 nav ul li{
     position: relative;
     float: left;
-    width: 285px;
+    width: 20%;
     text-align: center;
 }
 nav ul li:hover ul{display: block;
