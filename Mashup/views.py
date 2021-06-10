@@ -2,10 +2,11 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from .forms import UserRegisterForm, UserUpdateForm, ProfileUpdateForm
 from django.contrib.auth.decorators import login_required
-from .models import Post
+from .models import Post, Comment
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
+from django.urls import reverse
 # Create your views here.
 def home(request):
     context = {
@@ -31,6 +32,7 @@ class UserPostView(LoginRequiredMixin, ListView):
 
 class PostDetailView(DetailView):
     model = Post
+
 
 class PostCreateView(LoginRequiredMixin, CreateView):
     model = Post
@@ -67,6 +69,46 @@ class PostDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
             return True
         return False
 
+class CommentCreateView(LoginRequiredMixin, CreateView):
+    model = Comment
+    fields = ['content']
+    success_url = '/'
+
+    def form_valid(self, form):
+        form.instance.post = Post.objects.get(pk=self.kwargs.get("pk"))
+        form.instance.publisher = self.request.user
+        return super().form_valid(form)
+
+class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = Comment
+    fields = ['content']
+    def form_valid(self, form):
+        form.instance.publisher = self.request.user
+        return super().form_valid(form)
+
+    def test_func(self):
+        comment = self.get_object()
+        if self.request.user == comment.publisher:
+            return True
+        return False
+
+    def get_success_url(self):
+           pk = self.kwargs["pk"]
+           return reverse("post-detail", kwargs={"pk": pk})
+
+class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = Comment
+    
+    def test_func(self):
+        comment = self.get_object()
+        if self.request.user == comment.publisher:
+            return True
+        return False
+
+    def get_success_url(self):
+           pk = self.kwargs["pk"]
+           return reverse("post-detail", kwargs={"pk": pk})
+
 def register(request):
     if request.method == 'POST':
         form = UserRegisterForm(request.POST)
@@ -76,6 +118,7 @@ def register(request):
     else:
         form = UserRegisterForm()
     return render(request, 'mashup/register.html', {'form': form})
+
 
 @login_required
 def profile(request):
@@ -98,5 +141,3 @@ def profile(request):
     }
 
     return render(request, 'mashup/profile.html', context)
-
-
