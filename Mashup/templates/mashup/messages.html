@@ -1,0 +1,31 @@
+{% extents "mashup/base.html" %}
+{% block content %}
+        
+        <title>Messages</title>
+        <nav class="blue lighten-3">
+            <div class="nav-wrapper container">
+                <a href="#" class="brand-logo">Chat</a>
+                    <ul id="nav-mobile" class="right hide-on-med-and-down"</ul>
+            </div>
+        </nav>
+    <div class="section" style="height: 80vh">
+    <div class="row">
+        <div class="col s3">
+        <div class="card">
+            <div class="collection">
+                <a class="collection-item row">
+                    <div class="col s8">
+                    <span class="title" style="font-weight: bolder"></span>
+                    </div>
+                </a>  
+            </div>
+        </div>
+        </div>
+        <div class="col s9">
+            <div class="card">
+                <div id="board" class="section grey lighten-3" style="height: 68vh; padding: 5px; overflow-y: scroll">
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock content %}
