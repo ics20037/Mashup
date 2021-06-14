@@ -13,7 +13,7 @@ urlpatterns = [
     path('comment/<int:pk>/update/', mashup_views.CommentUpdateView.as_view(), name='comment-update'),
     path('comment/<int:pk>/delete/', mashup_views.CommentDeleteView.as_view(), name='comment-delete'),
     path('register/', mashup_views.register, name='register'),
-    path('profile/', mashup_views.profile, name='profile'),
+    path('profile/<int:id>/', mashup_views.profile, name='profile'),
     path('login/', auth_views.LoginView.as_view(template_name='Mashup/login.html'), name='login'),
     path('logout/', auth_views.LogoutView.as_view(template_name='Mashup/logout.html'), name='logout'),
 ]

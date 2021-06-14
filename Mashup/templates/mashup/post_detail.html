@@ -5,7 +5,7 @@
     <img class="rounded-circle article-img" src="{{ object.publisher.profile.image.url }}">
     <div class="media-body">
       <div class="article-metadata">
-        <a class="mr-2" href="{% url 'user-posts' object.publisher.username %}">{{ object.publisher }}</a>
+        <a class="mr-2" href="{% url 'profile' object.publisher.id %}">{{ object.publisher }}</a>
         <small class="text-muted">{{ object.date_posted|date:"F d, Y" }}</small>
           <div>
             {% if object.publisher == user %}
@@ -23,7 +23,7 @@
             <img class="rounded-circle article-img" src="{{ comment.publisher.profile.image.url }}">
             <div class="media-body">
               <div class="article-metadata">
-                <a class="mr-2" href="{% url 'user-posts' comment.publisher.username %}">{{ comment.publisher }}</a>
+                <a class="mr-2" href="{% url 'profile' comment.publisher.id %}">{{ comment.publisher }}</a>
                 <small class="text-muted">{{ comment.date_posted|date:"F d, Y" }}</small>
                 {% if comment.publisher == user %}
                   <div>

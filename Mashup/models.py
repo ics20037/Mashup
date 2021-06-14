@@ -51,3 +51,6 @@ class Profile(models.Model):
             posts.append(post)
 
         return posts
+
+    def add_friend(self, user):
+        self.friends.add(user)
