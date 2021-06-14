@@ -8,7 +8,7 @@ class Post(models.Model):
     title = models.CharField(max_length=100)
     content = models.TextField()
     date_posted = models.DateTimeField(default=timezone.now)
-    publisher = models.ForeignKey(User, on_delete=models.CASCADE)
+    publisher = models.ForeignKey(User, on_delete=models.CASCADE, related_name = "posts")
 
     def __str__(self):
         return self.title
@@ -23,6 +23,7 @@ class Profile(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     image = models.ImageField(default='default.png', upload_to='profile_pics')
     bio = models.TextField()
+    friends = models.ManyToManyField(User, related_name = "friends")
 
     def __str__(self):
         return f'{self.user.username} Profile'
@@ -36,3 +37,17 @@ class Profile(models.Model):
             output_size = (300, 300)
             img.thumbnail(output_size)
             img.save(self.image.path)
+
+    def get_posts():
+        user = request.user
+        posts = list()
+
+        for friend in user.friends.all():
+            if friend.posts:
+                for post in friend.posts.all():
+                    posts.append(post)
+
+        for post in user.posts.all():
+            posts.append(post)
+
+        return posts

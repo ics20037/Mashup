@@ -10,7 +10,8 @@ from django.urls import reverse
 # Create your views here.
 def home(request):
     context = {
-        'posts': Post.objects.all()
+        'user': request.user,
+        'posts': User.get_posts()
     }
     return render(request, 'mashup/index.html', context)
 
@@ -82,6 +83,8 @@ class CommentCreateView(LoginRequiredMixin, CreateView):
 class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Comment
     fields = ['content']
+    success_url = '/'
+
     def form_valid(self, form):
         form.instance.publisher = self.request.user
         return super().form_valid(form)
@@ -92,22 +95,16 @@ class CommentUpdateView(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
             return True
         return False
 
-    def get_success_url(self):
-           pk = self.kwargs["pk"]
-           return reverse("post-detail", kwargs={"pk": pk})
-
 class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = Comment
-    
+    success_url = '/'
+
     def test_func(self):
         comment = self.get_object()
         if self.request.user == comment.publisher:
             return True
         return False
 
-    def get_success_url(self):
-           pk = self.kwargs["pk"]
-           return reverse("post-detail", kwargs={"pk": pk})
 
 def register(request):
     if request.method == 'POST':
