@@ -10,8 +10,8 @@ from django.urls import reverse
 # Create your views here.
 def home(request):
     context = {
-        'user': request.user,
-        'posts': User.get_posts()
+        'friends': request.user.profile.get_friends(),
+        'posts': request.user.profile.get_feed_posts()
     }
     return render(request, 'mashup/index.html', context)
 
@@ -139,11 +139,12 @@ def profile(request, id):
         }
     else:
         if request.method == 'POST':
-            if User.objects.get(id=id) not in request.user.friends.all():
+            if not request.user.profile.is_friend(User.objects.get(id=id)):
                 request.user.profile.add_friend(User.objects.get(id=id))
                 messages.success(request, "Successfully added friend!")
             else:
-                messages.danger(request, "This user is already your friend.")
+                request.user.profile.remove_friend(User.objects.get(id=id))
+                messages.info(request, "Successfully unfriended with " + User.objects.get(id=id).username + ".")
             return redirect(request.path_info)
         context = {
             'user': User.objects.get(id=id),

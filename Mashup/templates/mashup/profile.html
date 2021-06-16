@@ -10,6 +10,7 @@
         <div class="media-body">
           <h2 class="account-heading">{{ user.username }}</h2>
           <p class="text-secondary">{{ user.email }}</p>
+          <h3 class="text-secondary">{{ user.profile.bio }}</h3>
         </div>
       </div>
       {% if user == request.user %}
@@ -25,10 +26,17 @@
             </div>
         </form>
       {% else %}
+        {% if user.profile in request.user.friends.all %}
         <form class="form-group d-flex flex-row-reverse" method="POST" enctype="multipart/form-data">
           {% csrf_token %}
-          <button class="btn btn-primary">Add Friend</button>
+          <button class="btn btn-danger">Unfriend</button>
         </form>
+        {% else %}
+          <form class="form-group d-flex flex-row-reverse" method="POST" enctype="multipart/form-data">
+            {% csrf_token %}
+            <button class="btn btn-primary">Add Friend</button>
+          </form>
+        {% endif %}
       {% endif %}
     </div>
 {% endblock content %}

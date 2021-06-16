@@ -38,19 +38,34 @@ class Profile(models.Model):
             img.thumbnail(output_size)
             img.save(self.image.path)
 
-    def get_posts():
-        user = request.user
-        posts = list()
+    def get_posts(self):
+        return self.user.posts.all()
 
-        for friend in user.friends.all():
-            if friend.posts:
-                for post in friend.posts.all():
-                    posts.append(post)
+    def get_feed_posts(self):
+        posts = []
 
-        for post in user.posts.all():
+        for friend in self.get_friends():
+            for post in friend.profile.get_posts():
+                posts.append(post)
+
+        for post in self.get_posts():
             posts.append(post)
 
         return posts
 
+    def get_friends(self):
+        return self.friends.all()
+
     def add_friend(self, user):
         self.friends.add(user)
+        user.profile.friends.add(self.user)
+
+    def is_friend(self, user):
+        if user in self.friends.all():
+            return True
+        return False
+
+    def remove_friend(self, user):
+        if user in self.friends.all():
+            self.friends.remove(user)
+            user.profile.friends.remove(self.user)
