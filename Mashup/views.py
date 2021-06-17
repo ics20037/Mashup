@@ -8,18 +8,26 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
 from django.urls import reverse
 # Create your views here.
+"""
 def home(request):
     context = {
         'friends': request.user.profile.get_friends(),
         'posts': request.user.profile.get_feed_posts()
     }
     return render(request, 'mashup/index.html', context)
-
+"""
 class Feed(LoginRequiredMixin, ListView):
     model = Post
     template_name = 'mashup/index.html'
     context_object_name = 'posts'
     ordering = ['-date_posted']
+
+    def get_context_data(self, **kwargs):
+        # Call the base implementation first to get a context
+        context = super().get_context_data(**kwargs)
+        # Add in a QuerySet of all the books
+        context['feed_posts'] = self.request.user.profile.get_feed_posts()
+        return context
 
 class UserPostView(LoginRequiredMixin, ListView):
     model = Post

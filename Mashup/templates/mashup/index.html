@@ -1,7 +1,7 @@
 {% extends "mashup/base.html" %}
 {% block content %}
 
-{% for post in posts %}
+{% for post in feed_posts %}
     <article class="media content-section">
       <img class="rounded-circle article-img" src="{{ post.publisher.profile.image.url }}">
       <div class="media-body">
