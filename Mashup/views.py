@@ -7,15 +7,9 @@ from django.views.generic import ListView, DetailView, CreateView, UpdateView, D
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib.auth.models import User
 from django.urls import reverse
+from django.db.models import Q
 # Create your views here.
-"""
-def home(request):
-    context = {
-        'friends': request.user.profile.get_friends(),
-        'posts': request.user.profile.get_feed_posts()
-    }
-    return render(request, 'mashup/index.html', context)
-"""
+
 class Feed(LoginRequiredMixin, ListView):
     model = Post
     template_name = 'mashup/index.html'
@@ -113,6 +107,17 @@ class CommentDeleteView(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
             return True
         return False
 
+class SearchView(ListView):
+    model = User
+    template_name = 'mashup/search.html'
+
+    def get_queryset(self): # new
+        query = self.request.GET.get('searched')
+        object_list = User.objects.filter(
+            username__icontains=query
+        )
+        return object_list
+
 
 def register(request):
     if request.method == 'POST':
@@ -135,7 +140,7 @@ def profile(request, id):
                 u_form.save()
                 p_form.save()
                 messages.success(request, f'Your account has been updated!')
-                return redirect('profile')
+                return redirect(request.path_info)
 
         else:
             u_form = UserUpdateForm(instance=request.user)

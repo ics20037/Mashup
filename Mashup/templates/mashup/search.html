@@ -1,0 +1,27 @@
+{% extends 'mashup/base.html' %}
+
+{% block content %}
+
+{% if object_list %}
+  <div class="d-flex justify-content-center"><h3 class="text-secondary">{{object_list|length}} Results</h3></div>
+{% endif %}
+  <div class="form-group">
+    {% for object in object_list %}
+    <article class="media content-section">
+      <img class="rounded-circle article-img" src="{{ object.profile.image.url }}">
+      <div class="media-body">
+        <div class="article-metadata">
+          <a class="mr-2" href="{% url 'profile' object.id %}">{{ object }}</a>
+        </div>
+        <p>{{ object.profile.bio }}</p>
+      </div>
+    </article>
+
+    {% empty %}
+      <h2>There are no results.</h2>
+
+    {% endfor %}
+  </div>
+
+
+{% endblock content %}
